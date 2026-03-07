@@ -1,6 +1,5 @@
 package org.example.bookride.config
 
-import org.example.bookride.listener.RedisMessageListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
@@ -8,18 +7,13 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.data.redis.listener.PatternTopic
-import org.springframework.data.redis.listener.RedisMessageListenerContainer
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter
 import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializationContext
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import tools.jackson.databind.ObjectMapper
 
 @Configuration
-class RedisConfig(
-    val redisMessageListener: RedisMessageListener,
-) {
+class RedisConfig {
     // Redis configuration beans would go here
 
     @Bean
@@ -72,19 +66,4 @@ class RedisConfig(
     }
 
     @Bean fun objectMapper(): ObjectMapper = ObjectMapper()
-
-    @Bean
-    fun topic(): PatternTopic = PatternTopic("__keyevent@*__:expired")
-
-    @Bean
-    fun redisContainer(lettuceConnectionFactory: LettuceConnectionFactory): RedisMessageListenerContainer {
-        val container = RedisMessageListenerContainer()
-        container.setConnectionFactory(lettuceConnectionFactory)
-        container.addMessageListener(messageListener(), topic())
-        container.isRunning
-        return container
-    }
-
-    @Bean
-    fun messageListener(): MessageListenerAdapter = MessageListenerAdapter(redisMessageListener)
 }

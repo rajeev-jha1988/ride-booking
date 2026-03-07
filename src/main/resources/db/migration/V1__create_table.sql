@@ -1,7 +1,7 @@
 -- Ensure extensions are enabled
 CREATE EXTENSION IF NOT EXISTS "postgis";
 
-CREATE TABLE IF NOT EXISTS business (
+CREATE TABLE IF NOT EXISTS ride (
     -- UUID Primary Key
                           id UUID PRIMARY KEY ,
                           name VARCHAR(255) NOT NULL,
@@ -9,20 +9,34 @@ CREATE TABLE IF NOT EXISTS business (
                           type VARCHAR(255) NOT NULL,
                           country VARCHAR(255) NOT NULL,
     -- Raw Coordinates
-                          longitude DOUBLE PRECISION NOT NULL,
-                          latitude DOUBLE PRECISION NOT NULL
-
+                          source_lat DOUBLE PRECISION NOT NULL,
+                          source_long DOUBLE PRECISION NOT NULL,
+                          destination_lat DOUBLE PRECISION NOT NULL,
+                          destination_long DOUBLE PRECISION NOT NULL,
+                          driver_id UUID,
+                          status VARCHAR(255),
+                          price DECIMAL(12, 2),
+                          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                          updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                          city_id VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS business_geo_hash_mapping (
-                                        business_id UUID PRIMARY KEY, -- Links to the sharded table
-                                        geom GEOMETRY(Point, 4326) NOT NULL,
-                                        geohash TEXT GENERATED ALWAYS AS (ST_GeoHash(geom, 6)) STORED,
-                                        business_type VARCHAR(50) -- Optional: for filtering by type during search
+-- CRITICAL: Index for the "Accept Ride" lookups
+CREATE INDEX idx_ride_status_city ON ride (status, city_id);
+
+CREATE TABLE IF NOT EXISTS driver (
+                                      id UUID PRIMARY KEY ,
+                                      name VARCHAR(255) NOT NULL,
+                                      status VARCHAR(255),
+                                      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Spatial Index for "Find Nearby" queries
-CREATE INDEX IF NOT EXISTS idx_spatial_geom ON business_geo_hash_mapping USING GIST (geom);
--- Standard Index for Geohash lookups
-CREATE INDEX IF NOT EXISTS idx_spatial_geohash ON business_geo_hash_mapping (geohash);
+CREATE TABLE IF NOT EXISTS location (
+                                      id UUID PRIMARY KEY ,
+                                      driver_id UUID NOT NULL,
+                                      latitude DOUBLE PRECISION NOT NULL,
+                                      longitude DOUBLE PRECISION NOT NULL,
+                                      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 

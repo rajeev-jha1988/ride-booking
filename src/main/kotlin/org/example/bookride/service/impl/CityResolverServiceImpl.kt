@@ -23,7 +23,6 @@ class CityResolverServiceImpl(
         for (mumbaiHexagon in mumbaiHexagons) {
             cityHexaMapping[mumbaiHexagon] = "MUMBAI"
         }
-        TODO("Not yet implemented")
     }
 
     override fun resolveCity(

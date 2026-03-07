@@ -18,7 +18,6 @@ import kotlin.text.isEmpty
 import kotlin.text.split
 import kotlin.text.startsWith
 import kotlin.text.toRegex
-import kotlin.toString
 
 @Component("RedisMessageListener")
 class RedisMessageListener(

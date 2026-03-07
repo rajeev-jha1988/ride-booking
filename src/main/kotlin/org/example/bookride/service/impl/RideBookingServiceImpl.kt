@@ -15,6 +15,7 @@ import org.example.bookride.service.RideBookingService
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.Duration
 import java.util.UUID
 
@@ -34,7 +35,7 @@ class RideBookingServiceImpl(
                 sourceLong = ride.source.longitude,
                 destinationLat = ride.destination.latitude,
                 destinationLong = ride.destination.longitude,
-                price = 100.00,
+                price = BigDecimal.valueOf(100.00),
             )
         rideRepository.save(
             ride,
@@ -42,7 +43,7 @@ class RideBookingServiceImpl(
 
         return RideResponse(
             rideId = ride.id,
-            price = ride.price,
+            price = ride.price.toDouble(),
         )
     }
 
