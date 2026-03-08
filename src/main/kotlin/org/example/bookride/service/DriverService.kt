@@ -8,7 +8,7 @@ interface DriverService {
     suspend fun findDriverById(id: UUID): Driver?
 
     suspend fun updateDriverStatus(
-        id: UUID,
+        driverId: UUID,
         fromStatus: DriverStatus,
         toStatus: DriverStatus,
     ): Boolean

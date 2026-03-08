@@ -68,7 +68,7 @@ class DriverFinderServiceImpl(
 
             // 4. TRY TO LOCK IN DATABASE
             // If this returns true, we officially "own" this driver for 10 seconds
-            if (driverService.updateDriverStatus(rideId, DriverStatus.AVAILABLE, DriverStatus.OFFER_PENDING)) {
+            if (driverService.updateDriverStatus(driverUuid, DriverStatus.AVAILABLE, DriverStatus.OFFER_PENDING)) {
                 // 5. Update Redis to prevent other searches from picking them
                 val lockKey = "driver:$driverIdStr:status"
                 val timerKey = "offer_timer:$rideId:$driverIdStr:${source.latitude}:${source.longitude}"

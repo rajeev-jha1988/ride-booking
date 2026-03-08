@@ -16,11 +16,11 @@ class DriverServiceImpl(
 
     @Transactional
     override suspend fun updateDriverStatus(
-        id: UUID,
+        driverId: UUID,
         fromStatus: DriverStatus,
         toStatus: DriverStatus,
     ): Boolean {
-        val driver = driverRepository.findByIdAndStatus(id, fromStatus) ?: return false
+        val driver = driverRepository.findByIdAndStatus(driverId, fromStatus) ?: return false
         driver.status = toStatus
         driverRepository.save(driver)
         return true

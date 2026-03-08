@@ -22,5 +22,5 @@ data class Location(
     val longitude: Double,
     @Column(nullable = false, name = "created_at")
     @CreationTimestamp(source = SourceType.DB)
-    val createdAt: Instant,
+    val createdAt: Instant? = null,
 )
